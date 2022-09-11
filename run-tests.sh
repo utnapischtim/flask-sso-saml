@@ -6,8 +6,14 @@
 # Flask-SSO-SAML is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-pydocstyle flask_sso_saml tests docs && \
-isort -rc -c -df && \
-check-manifest --ignore ".travis-*" && \
-sphinx-build -qnNW docs docs/_build/html && \
-python setup.py test
+# Quit on errors
+set -o errexit
+
+# Quit on unbound symbols
+set -o nounset
+
+python -m check_manifest
+python -m sphinx.cmd.build -qnNW docs docs/_build/html
+python -m pytest
+tests_exit_code=$?
+exit "$tests_exit_code"
